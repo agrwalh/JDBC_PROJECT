@@ -2,13 +2,10 @@ package com.project.app.controller;
 
 import java.util.Scanner;
 
-// All input reading helpers in one place
-// AppController calls these — keeps handle methods clean
 public class InputUtil {
 
 	private static final Scanner sc = new Scanner(System.in);
 
-	// Read a plain integer — returns -1 if not a valid number
 	public static int readInt(String prompt) {
 		System.out.print(prompt);
 		String input = sc.nextLine().trim();
@@ -24,7 +21,6 @@ public class InputUtil {
 		}
 	}
 
-	// Read an integer that must be > 0 (used for age)
 	public static int readPositiveInt(String prompt) {
 		int value = readInt(prompt);
 		if (value == -1)
@@ -36,7 +32,6 @@ public class InputUtil {
 		return value;
 	}
 
-	// Read a decimal number that must be > 0 (used for fees)
 	public static double readPositiveDouble(String prompt) {
 		System.out.print(prompt);
 		String input = sc.nextLine().trim();
@@ -57,7 +52,6 @@ public class InputUtil {
 		}
 	}
 
-	// Read a non-empty String — returns null if blank
 	public static String readNonEmptyString(String prompt) {
 		System.out.print(prompt);
 		String input = sc.nextLine().trim();
@@ -68,7 +62,6 @@ public class InputUtil {
 		return input;
 	}
 
-	// Read a plain line — used for yes/no confirmations
 	public static String readLine(String prompt) {
 		System.out.print(prompt);
 		return sc.nextLine().trim();
