@@ -2,15 +2,10 @@ package com.project.app.controller;
 
 import com.project.app.service.StudentService;
 
-// AppController owns the menu loop and all handle methods
-// Uses InputUtil for reading input safely
-// Uses Validator for DB checks during input collection
-// Uses StudentService for all actual business operations
 public class AppController {
 
 	private StudentService service = new StudentService();
 
-	// Called from MainApp.main() — starts the application
 	public void run() {
 
 		System.out.println("=============================================");
@@ -22,7 +17,6 @@ public class AppController {
 		do {
 			printMenu();
 
-			// Read menu choice safely — catch non-numeric input
 			try {
 				choice = Integer.parseInt(InputUtil.readLine("Enter choice: ").trim());
 			} catch (NumberFormatException e) {
@@ -81,14 +75,12 @@ public class AppController {
 	private void handleAddStudent() {
 		System.out.println("\n--- ADD STUDENT ---");
 
-		// Show valid branches first so user knows what to type
 		service.showAllBranches();
 
 		int id = InputUtil.readInt("Enter Student ID: ");
 		if (id == -1)
 			return;
 
-		// Check ID is free before asking more details
 		if (!Validator.studentIdFree(id))
 			return;
 
@@ -115,14 +107,12 @@ public class AppController {
 	private void handleRegisterCourse() {
 		System.out.println("\n--- REGISTER FOR COURSE ---");
 
-		// Show valid courses first
 		service.showAllCourses();
 
 		int studentId = InputUtil.readInt("Enter Student ID: ");
 		if (studentId == -1)
 			return;
 
-		// Check student exists before asking course details
 		if (!Validator.studentExists(studentId))
 			return;
 
@@ -132,7 +122,6 @@ public class AppController {
 		if (course == null)
 			return;
 
-		// Validate course against course_master before asking fee
 		if (!Validator.courseExists(course))
 			return;
 
@@ -145,7 +134,6 @@ public class AppController {
 		System.out.println(service.registerCourse(studentId, course, fees));
 	}
 
-	// CASE 4 — Search Student
 	private void handleSearchStudent() {
 		System.out.println("\n--- SEARCH STUDENT ---");
 
@@ -164,7 +152,6 @@ public class AppController {
 		if (id == -1)
 			return;
 
-		// Check student exists before asking new details
 		if (!Validator.studentExists(id))
 			return;
 
@@ -174,7 +161,6 @@ public class AppController {
 		if (newName == null)
 			return;
 
-		// Show valid branches before asking for new branch
 		service.showAllBranches();
 
 		String newBranch = InputUtil.readNonEmptyString("Enter New Branch (from list above): ");
@@ -235,7 +221,6 @@ public class AppController {
 		if (id == -1)
 			return;
 
-		// Check student exists before asking for confirmation
 		if (!Validator.studentExists(id))
 			return;
 
@@ -250,7 +235,6 @@ public class AppController {
 		System.out.println(service.deleteStudent(id));
 	}
 
-	// CASE 9 — High Paying Students Report
 	private void handleHighPaying() {
 		System.out.println("\n--- HIGH PAYING STUDENTS REPORT ---");
 
@@ -261,7 +245,6 @@ public class AppController {
 		service.highPayingStudents(minFee);
 	}
 
-	// Menu printed before every loop
 	private void printMenu() {
 		System.out.println("\n=============================================");
 		System.out.println("                MAIN MENU                    ");
