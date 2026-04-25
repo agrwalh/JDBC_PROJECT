@@ -12,13 +12,11 @@ import com.project.app.model.Student;
 
 public class StudentService {
 
-	// Service uses DAO objects — no direct DB code here
 	private StudentDAO studentDAO = new StudentDAO();
 	private RegistrationDAO registrationDAO = new RegistrationDAO();
 	private CourseMasterDAO courseMasterDAO = new CourseMasterDAO();
 	private BranchMasterDAO branchMasterDAO = new BranchMasterDAO();
 
-	// 1. Add student — validates branch against branch_master
 	public String addStudent(int id, String name, int age, String branch) {
 		if (name == null || name.trim().isEmpty())
 			return "ERROR: Name cannot be empty.";
@@ -38,7 +36,6 @@ public class StudentService {
 		}
 	}
 
-	// 2. Register for course — validates course against course_master
 	public String registerCourse(int studentId, String course, double fees) {
 		if (course == null || course.trim().isEmpty())
 			return "ERROR: Course name cannot be empty.";
@@ -61,7 +58,6 @@ public class StudentService {
 		}
 	}
 
-	// 3. View all students with courses (LEFT JOIN)
 	public void viewAllStudentsWithCourses() {
 		try {
 			studentDAO.viewAllStudentsWithCourses();
@@ -70,7 +66,6 @@ public class StudentService {
 		}
 	}
 
-	// 4. Search student by ID — shows student + all registered courses
 	public void searchStudentById(int id) {
 		try {
 			Student s = studentDAO.getStudentById(id);
@@ -93,7 +88,6 @@ public class StudentService {
 		}
 	}
 
-	// 5. Update student name and branch — validates new branch too
 	public String updateStudent(int id, String newName, String newBranch) {
 		if (newName == null || newName.trim().isEmpty())
 			return "ERROR: Name cannot be empty.";
@@ -111,7 +105,6 @@ public class StudentService {
 		}
 	}
 
-	// 6. Update course fee — fee must be positive
 	public String updateFee(int studentId, String course, double newFee) {
 		if (newFee <= 0)
 			return "ERROR: Fee must be positive.";
@@ -123,7 +116,6 @@ public class StudentService {
 		}
 	}
 
-	// 7. Cancel registration — removes only the registration row
 	public String cancelRegistration(int studentId, String course) {
 		if (course == null || course.trim().isEmpty())
 			return "ERROR: Course name cannot be empty.";
@@ -136,7 +128,6 @@ public class StudentService {
 		}
 	}
 
-	// 8. Delete student — uses transaction (registrations first, then student)
 	public String deleteStudent(int id) {
 		try {
 			if (!studentDAO.studentExists(id))
@@ -148,7 +139,6 @@ public class StudentService {
 		}
 	}
 
-	// 9. High paying students report
 	public void highPayingStudents(double minFee) {
 		if (minFee < 0) {
 			System.out.println("ERROR: Fee cannot be negative.");
@@ -161,7 +151,6 @@ public class StudentService {
 		}
 	}
 
-	// 10. Course-wise student count
 	public void courseWiseCount() {
 		try {
 			registrationDAO.courseWiseCount();
@@ -170,7 +159,6 @@ public class StudentService {
 		}
 	}
 
-	// 11. Show all available courses from course_master
 	public void showAllCourses() {
 		try {
 			courseMasterDAO.displayAllCourses();
@@ -179,7 +167,6 @@ public class StudentService {
 		}
 	}
 
-	// 12. Show all available branches from branch_master
 	public void showAllBranches() {
 		try {
 			branchMasterDAO.displayAllBranches();
