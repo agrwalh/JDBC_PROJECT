@@ -10,7 +10,6 @@ import com.project.app.util.DBUtil;
 
 public class StudentDAO {
 
-	// Add new student to the student table
 	public boolean addStudent(Student s) throws SQLException {
 		String sql = "INSERT INTO student (id, name, age, branch) VALUES (?, ?, ?, ?)";
 
@@ -24,7 +23,6 @@ public class StudentDAO {
 		}
 	}
 
-	// Check if a student with the given ID exists
 	public boolean studentExists(int id) throws SQLException {
 		String sql = "SELECT id FROM student WHERE id = ?";
 
@@ -36,7 +34,6 @@ public class StudentDAO {
 		}
 	}
 
-	// Get one student by ID — returns null if not found
 	public Student getStudentById(int id) throws SQLException {
 		String sql = "SELECT * FROM student WHERE id = ?";
 
@@ -52,11 +49,8 @@ public class StudentDAO {
 		return null;
 	}
 
-	// View all students with their courses using LEFT JOIN
-	// LEFT JOIN means students with no registration are also shown
 	public void viewAllStudentsWithCourses() throws SQLException {
-		String sql = "SELECT s.id, s.name, s.age, s.branch, r.course_name, r.fees_paid " + "FROM student s "
-				+ "LEFT JOIN registration r ON s.id = r.student_id " + "ORDER BY s.id";
+		String sql = "SELECT s.id, s.name, s.age, s.branch, r.course_name, r.fees_paid FROM student s LEFT JOIN registration r ON s.id = r.student_id ORDER BY s.id";
 
 		try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -84,7 +78,6 @@ public class StudentDAO {
 		}
 	}
 
-	// Update student name and branch
 	public boolean updateStudent(int id, String newName, String newBranch) throws SQLException {
 		String sql = "UPDATE student SET name = ?, branch = ? WHERE id = ?";
 
@@ -97,15 +90,11 @@ public class StudentDAO {
 		}
 	}
 
-	// Delete student with TRANSACTION
-	// Step 1: delete registrations first (FK rule)
-	// Step 2: delete student
-	// If anything fails -> ROLLBACK both
 	public boolean deleteStudentWithTransaction(int id) throws SQLException {
 		Connection con = null;
 		try {
 			con = DBUtil.getConnection();
-			con.setAutoCommit(false); // BEGIN TRANSACTION
+			con.setAutoCommit(false);
 
 			PreparedStatement ps1 = con.prepareStatement("DELETE FROM registration WHERE student_id = ?");
 			ps1.setInt(1, id);
@@ -117,13 +106,13 @@ public class StudentDAO {
 			int rows = ps2.executeUpdate();
 			ps2.close();
 
-			con.commit(); // both steps succeeded — commit
+			con.commit();
 			System.out.println("[Transaction Committed Successfully]");
 			return rows > 0;
 
 		} catch (SQLException e) {
 			if (con != null) {
-				con.rollback(); // undo everything if anything failed
+				con.rollback();
 				System.out.println("[Transaction Rolled Back]");
 			}
 			throw e;
@@ -135,11 +124,8 @@ public class StudentDAO {
 		}
 	}
 
-	// Report: students who paid more than minFee
 	public void highPayingStudents(double minFee) throws SQLException {
-		String sql = "SELECT s.id, s.name, s.branch, r.course_name, r.fees_paid " + "FROM student s "
-				+ "JOIN registration r ON s.id = r.student_id " + "WHERE r.fees_paid > ? "
-				+ "ORDER BY r.fees_paid DESC";
+		String sql = "SELECT s.id, s.name, s.branch, r.course_name, r.fees_paid FROM student s JOIN registration r ON s.id = r.student_id WHERE r.fees_paid > ? ORDER BY r.fees_paid DESC";
 
 		try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
