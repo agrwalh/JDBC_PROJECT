@@ -6,17 +6,12 @@ import com.project.app.dao.BranchMasterDAO;
 import com.project.app.dao.CourseMasterDAO;
 import com.project.app.dao.StudentDAO;
 
-// All DB validation checks in one place
-// Called from AppController before collecting the next input
-// Returns false + prints error if check fails
-// Caller does: if (!Validator.checkXxx()) return;
 public class Validator {
 
 	private static StudentDAO studentDAO = new StudentDAO();
 	private static CourseMasterDAO courseMasterDAO = new CourseMasterDAO();
 	private static BranchMasterDAO branchMasterDAO = new BranchMasterDAO();
 
-	// Check student EXISTS — used before register, update, cancel, delete
 	public static boolean studentExists(int id) {
 		try {
 			if (!studentDAO.studentExists(id)) {
@@ -30,7 +25,6 @@ public class Validator {
 		}
 	}
 
-	// Check student ID is FREE — used before adding a new student
 	public static boolean studentIdFree(int id) {
 		try {
 			if (studentDAO.studentExists(id)) {
@@ -44,7 +38,6 @@ public class Validator {
 		}
 	}
 
-	// Check course EXISTS in course_master — used before registering
 	public static boolean courseExists(String courseName) {
 		try {
 			if (!courseMasterDAO.courseExists(courseName)) {
@@ -59,7 +52,6 @@ public class Validator {
 		}
 	}
 
-	// Check branch EXISTS in branch_master — used before adding/updating student
 	public static boolean branchExists(String branchName) {
 		try {
 			if (!branchMasterDAO.branchExists(branchName)) {
