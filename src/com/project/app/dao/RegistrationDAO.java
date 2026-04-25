@@ -12,7 +12,6 @@ import com.project.app.util.DBUtil;
 
 public class RegistrationDAO {
 
-	// Check if student is already registered for the same course
 	public boolean isDuplicateRegistration(int studentId, String course) throws SQLException {
 		String sql = "SELECT reg_id FROM registration WHERE student_id = ? AND course_name = ?";
 
@@ -21,17 +20,15 @@ public class RegistrationDAO {
 			ps.setInt(1, studentId);
 			ps.setString(2, course);
 			ResultSet rs = ps.executeQuery();
-			return rs.next(); // true = duplicate exists
+			return rs.next();
 		}
 	}
 
-	// Register student for a course — with TRANSACTION
-	// Atomic: insert must either fully succeed or rollback
 	public boolean registerCourse(Registration reg) throws SQLException {
 		Connection con = null;
 		try {
 			con = DBUtil.getConnection();
-			con.setAutoCommit(false); // BEGIN TRANSACTION
+			con.setAutoCommit(false);
 
 			String sql = "INSERT INTO registration (student_id, course_name, fees_paid) VALUES (?, ?, ?)";
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -42,13 +39,13 @@ public class RegistrationDAO {
 			int rows = ps.executeUpdate();
 			ps.close();
 
-			con.commit(); // COMMIT on success
+			con.commit();
 			System.out.println("[Registration Transaction Committed]");
 			return rows > 0;
 
 		} catch (SQLException e) {
 			if (con != null) {
-				con.rollback(); // ROLLBACK on failure
+				con.rollback();
 				System.out.println("[Registration Transaction Rolled Back]");
 			}
 			throw e;
@@ -60,7 +57,6 @@ public class RegistrationDAO {
 		}
 	}
 
-	// Get all registrations for a student (for search feature)
 	public List<Registration> getRegistrationsByStudentId(int studentId) throws SQLException {
 		List<Registration> list = new ArrayList<>();
 		String sql = "SELECT * FROM registration WHERE student_id = ?";
@@ -82,7 +78,6 @@ public class RegistrationDAO {
 		return list;
 	}
 
-	// Update fee for a specific course registration
 	public boolean updateFee(int studentId, String course, double newFee) throws SQLException {
 		String sql = "UPDATE registration SET fees_paid = ? WHERE student_id = ? AND course_name = ?";
 
@@ -95,7 +90,6 @@ public class RegistrationDAO {
 		}
 	}
 
-	// Cancel registration — removes only the registration row, NOT the student
 	public boolean cancelRegistration(int studentId, String course) throws SQLException {
 		String sql = "DELETE FROM registration WHERE student_id = ? AND course_name = ?";
 
@@ -107,10 +101,8 @@ public class RegistrationDAO {
 		}
 	}
 
-	// Report: course-wise student count
 	public void courseWiseCount() throws SQLException {
-		String sql = "SELECT course_name, COUNT(*) AS total_students " + "FROM registration " + "GROUP BY course_name "
-				+ "ORDER BY total_students DESC";
+		String sql = "SELECT course_name, COUNT(*) AS total_students FROM registration GROUP BY course_name ORDER BY total_students DESC";
 
 		try (Connection con = DBUtil.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
